@@ -3,13 +3,16 @@ module Main where
 targetValue = 2020 :: Int
 
 breadthFirst :: [Int] -> [Int]
-breadthFirst (x:xs) = searchValue x xs ++ breadthFirst xs
+breadthFirst (x:xs) = searchValue [x] xs ++ breadthFirst xs
 breadthFirst [] = []
 
-searchValue :: Int -> [Int] -> [Int]
-searchValue c (x:xs) | acc == targetValue = [c, x]
+searchValue :: [Int] -> [Int] -> [Int]
+searchValue c (x:xs) | acc == targetValue && length(c) == 2 = (x:c)
+                     | acc < targetValue && length(c) < 2 = searchValue (x:c) xs
                      | otherwise = searchValue c xs
-                     where acc = c + x
+                     where
+                        sum = foldl (+) 0
+                        acc = (sum c) + x
 searchValue _ [] = []
 
 main :: IO ()
