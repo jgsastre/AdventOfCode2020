@@ -19,13 +19,13 @@ mkPassport :: [Token] -> Maybe Passport
 mkPassport tokens = case validPassport of
     True -> Just (Passport tokens)
     False -> Nothing
-    where 
+    where
         neededTokens = filter (\x -> x /= "cid") validTokens
-        validPassport = 
+        validPassport =
             length (filter (\x -> x /= "cid") keys) == length neededTokens &&
-            product (map fromEnum containsNeedKey) == 1 && 
+            product (map fromEnum containsNeedKey) == 1 &&
             product (map (fromEnum . validToken) tokens) == 1
-        containsNeedKey = map (\x -> elem x keys) neededTokens 
+        containsNeedKey = map (\x -> elem x keys) neededTokens
         keys = [x | Token x _ <- tokens]
         validToken :: Token -> Bool
         validToken (Token key value) = case key of
@@ -53,9 +53,9 @@ mkPassport tokens = case validPassport of
             "cid" -> True
 
 parseChunk :: [String] -> [Token] -> ([String], [Token])
-parseChunk [] tokens = ([], tokens) 
-parseChunk (x:xs) tokens 
-    | x == "" = (xs, tokens) 
+parseChunk [] tokens = ([], tokens)
+parseChunk (x:xs) tokens
+    | x == "" = (xs, tokens)
     | otherwise = parseChunk xs (tokens ++ catMaybes (map parseToken words))
         where words = splitOn " " x
 

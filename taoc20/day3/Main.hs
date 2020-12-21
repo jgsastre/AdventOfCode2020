@@ -1,5 +1,6 @@
 module Main where
 
+import Data.Maybe (catMaybes)
 
 data Board = Board [String]
 
