@@ -3,11 +3,11 @@ module Main where
 import qualified Data.Map.Strict as Map
 import Data.List
 
-type Position = (Int, Int, Int)
+type Position = (Int, Int, Int, Int)
 type State = [Position]
 
 parseFile :: [String] -> State
-parseFile lines = map (\(x,y,_) -> (x,y,0)) enabledPositions
+parseFile lines = map (\(x,y,_) -> (x,y,0,0)) enabledPositions
     where
         enabledPositions = filter (\(_,_,c) -> c == '#') indexAndValues
         indexAndValues = concat $ map transformLine (zip [0..length lines - 1] lines)
@@ -18,9 +18,9 @@ parseFile lines = map (\(x,y,_) -> (x,y,0)) enabledPositions
 
 calcNeighbors :: Position -> [Position]
 calcNeighbors pos = let
-        (x, y, z) = pos
+        (x, y, z, w) = pos
         idx = [-1..1]
-     in delete pos [(x + i, y + j, z + k) | i <- idx, j <- idx, k <- idx]
+     in delete pos [(x + i, y + j, z + k, w + l) | i <- idx, j <- idx, k <- idx, l <- idx]
 
 isActive :: State -> Position -> Bool
 isActive state pos = elem pos state
@@ -47,6 +47,7 @@ loop :: Int -> State -> State
 loop 0 state = state
 loop n state = loop (n - 1) (evolve state)
 
+{-
 minCoords :: State -> Position
 minCoords state = extremeCoords state min
 
@@ -73,6 +74,7 @@ printState state = preamble ++ foldl (\acc x -> acc ++ printZ x) [] [minZ..maxZ]
                 printPos y x = case isActive state (x, y, z) of
                     True -> '#'
                     False -> '.'
+-}
 
 main :: IO ()
 main = do
