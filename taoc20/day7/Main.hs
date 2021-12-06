@@ -15,8 +15,8 @@ mkRule line = bagName >>= \x -> Just (Rule x bagsContained)
         tokens = splitOn "," line
         bagsContained = catMaybes $ map parseBags tokens
         parseBags :: String -> Maybe (Int, String)
-        parseBags x = matchRegex (mkRegex containBagRegex) x >>= 
-            \x -> return ( (read . head) x, (head . tail) x) 
+        parseBags x = matchRegex (mkRegex containBagRegex) x >>=
+            \x -> return ( (read . head) x, (head . tail) x)
         containBagRegex =  "([0-9])+ ([a-z]+ [a-z]+)"
 
 
@@ -27,7 +27,7 @@ contains rules (Rule _ bags) bag = elem bag (map snd bags) || nestedContained
         nestedContained = elem True subBagsContains
         subBagsContains = map subBagContains bags
         subBagContains :: (Int, String) -> Bool
-        subBagContains (_, subBag) = fromMaybe False (find predicate rules >>= 
+        subBagContains (_, subBag) = fromMaybe False (find predicate rules >>=
             \x -> return (contains rules x bag))
                 where
                     predicate :: Rule -> Bool
@@ -52,6 +52,6 @@ main = do
     let goldBags = filter (\x -> contains rules x "shiny gold") rules
 
     let goldBagRule = find (\x -> case x of Rule name _ -> name == "shiny gold") rules
-    let goldContainsBags = goldBagRule >>= return . bagsContained rules 
-    
+    let goldContainsBags = goldBagRule >>= return . bagsContained rules
+
     print $ goldContainsBags
